@@ -12,8 +12,8 @@
     <context:property-placeholder/>
     <context:annotation-config/>
 
-    <mongo:mongo host="recept" port="27017"/>
-    <mongo:db-factory dbname="portal-core" mongo-ref="mongo"/>
+    <mongo:mongo host="ds159377.mlab.com" port="59377"/>
+    <mongo:db-factory dbname="service" mongo-ref="mongo" username="service" password="service01"/>
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
     </bean>
