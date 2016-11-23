@@ -29,11 +29,6 @@ public class UserController extends AbstractController<User> {
     }
 
     @Override
-    protected void prepareEntityForSaving(User entity, User user) {
-
-    }
-
-    @Override
     public AbstractDAO<User> getDao() {
         return userDAO;
     }

@@ -13,12 +13,13 @@ import java.io.IOException;
 /**
  * Created by [david] on 23.11.16.
  */
-public abstract class AbstractController<T extends Entity> extends AbstractDAO<T> {
+public abstract class AbstractController<T extends Entity> {
     private static Class clazz;
     private static final Logger logger = LoggerFactory.getLogger(clazz == null ? "" : clazz.getName());
+    protected Class type;
 
     public AbstractController(Class<T> type, Class className) {
-        super(type);
+        this.type = type;
         clazz = className;
     }
 
@@ -50,9 +51,9 @@ public abstract class AbstractController<T extends Entity> extends AbstractDAO<T
         User user = getCurentUser();
         getDao().post(entity, user);
         if (user != null)
-            LOG.info("{} : {}", user.getName(), entity.getId());
+            logger.info("{} : {}", user.getName(), entity.getId());
         else
-            LOG.info("{}", entity.getId());
+            logger.info("{}", entity.getId());
         return Response.noContent().header("Location", entity.getId()).build();
     }
 
@@ -61,9 +62,9 @@ public abstract class AbstractController<T extends Entity> extends AbstractDAO<T
     public T put(JsonNode obj, @PathParam("id") String id) {
         User user = getCurentUser();
         if (user != null)
-            LOG.info("{} : {}", user.getName(), id);
+            logger.info("{} : {}", user.getName(), id);
         else
-            LOG.info("{}", id);
+            logger.info("{}", id);
         logger.info("{} : {}", user.getName(), id);
         return getDao().put(obj, id, user);
     }
@@ -73,9 +74,9 @@ public abstract class AbstractController<T extends Entity> extends AbstractDAO<T
     public void deleteById(@PathParam("id") String id) {
         User user = getCurentUser();
         if (user != null)
-            LOG.info("{} : {}", user.getName(), id);
+            logger.info("{} : {}", user.getName(), id);
         else
-            LOG.info("{}", id);
+            logger.info("{}", id);
         getDao().deleteById(id, user);
     }
 
