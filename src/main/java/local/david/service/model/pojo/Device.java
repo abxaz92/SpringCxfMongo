@@ -83,11 +83,11 @@ public class Device extends Entity {
         this.completeDate = completeDate;
     }
 
-    public Set<String> getImages() {
+    public Set<Image> getImages() {
         return images;
     }
 
-    public void setImages(Set<String> images) {
+    public void setImages(Set<Image> images) {
         this.images = images;
     }
 }
