@@ -3,7 +3,6 @@ package local.david.service.common;
 import local.david.service.model.pojo.User;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
@@ -14,16 +13,15 @@ import java.io.IOException;
  * Created by [david] on 23.11.16.
  */
 public abstract class AbstractController<T extends Entity> {
-    private static Class clazz;
-    private static final Logger logger = LoggerFactory.getLogger(clazz == null ? "" : clazz.getName());
     protected Class type;
 
-    public AbstractController(Class<T> type, Class className) {
+    public AbstractController(Class<T> type) {
         this.type = type;
-        clazz = className;
     }
 
     protected abstract AbstractDAO<T> getDao();
+
+    protected abstract Logger getLogger();
 
     protected abstract User getCurentUser();
 
@@ -51,9 +49,9 @@ public abstract class AbstractController<T extends Entity> {
         User user = getCurentUser();
         getDao().post(entity, user);
         if (user != null)
-            logger.info("{} : {}", user.getName(), entity.getId());
+            getLogger().info("{} : {}", user.getName(), entity.getId());
         else
-            logger.info("{}", entity.getId());
+            getLogger().info("{}", entity.getId());
         return Response.noContent().header("Location", entity.getId()).build();
     }
 
@@ -62,10 +60,9 @@ public abstract class AbstractController<T extends Entity> {
     public T put(JsonNode obj, @PathParam("id") String id) {
         User user = getCurentUser();
         if (user != null)
-            logger.info("{} : {}", user.getName(), id);
+            getLogger().info("{} : {}", user.getName(), id);
         else
-            logger.info("{}", id);
-        logger.info("{} : {}", user.getName(), id);
+            getLogger().info("{}", id);
         return getDao().put(obj, id, user);
     }
 
@@ -74,9 +71,9 @@ public abstract class AbstractController<T extends Entity> {
     public void deleteById(@PathParam("id") String id) {
         User user = getCurentUser();
         if (user != null)
-            logger.info("{} : {}", user.getName(), id);
+            getLogger().info("{} : {}", user.getName(), id);
         else
-            logger.info("{}", id);
+            getLogger().info("{}", id);
         getDao().deleteById(id, user);
     }
 

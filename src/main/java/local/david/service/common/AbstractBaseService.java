@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -35,6 +36,10 @@ public abstract class AbstractBaseService<T extends Entity> extends ExceptionFac
     protected MongoTemplate mt;
 
     protected Class<T> type;
+
+
+    private FindAndModifyOptions option = new FindAndModifyOptions()
+            .returnNew(true);
 
     public AbstractBaseService(Class<T> type) {
         this.type = type;
@@ -319,6 +324,11 @@ public abstract class AbstractBaseService<T extends Entity> extends ExceptionFac
     public void upsert(Query query, T entity) throws Exception {
         Update update = getUpdateObject(entity);
         mt.upsert(query, update, this.type);
+    }
+
+    public T findAndUpdate(String id, Update update) {
+        return mt.findAndModify(new Query(Criteria.where("id").is(id)), update,
+                option, this.type);
     }
 
     public Update getUpdateObject(T entity) throws Exception {

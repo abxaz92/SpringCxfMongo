@@ -2,9 +2,9 @@ package local.david.service.controller;
 
 import local.david.service.common.AbstractController;
 import local.david.service.common.AbstractDAO;
-import local.david.service.model.dao.UserDAO;
+import local.david.service.model.dao.VendorDAO;
 import local.david.service.model.pojo.User;
-import local.david.service.service.ContextService;
+import local.david.service.model.pojo.Vendor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,26 +15,24 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Created by [david] on 22.11.16.
+ * Created by [david] on 23.11.16.
  */
-@Service("userController")
-@Path("/user")
+@Service("vendorController")
+@Path("/vendor")
 @Produces(MediaType.APPLICATION_JSON)
-public class UserController extends AbstractController<User> {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+public class VendorController extends AbstractController<Vendor> {
+    private static final Logger logger = LoggerFactory.getLogger(VendorController.class);
 
     @Autowired
-    private UserDAO userDAO;
-    @Autowired
-    private ContextService ctx;
+    private VendorDAO vendorDAO;
 
-    public UserController() {
-        super(User.class);
+    public VendorController() {
+        super(Vendor.class);
     }
 
     @Override
-    public AbstractDAO<User> getDao() {
-        return userDAO;
+    protected AbstractDAO<Vendor> getDao() {
+        return vendorDAO;
     }
 
     @Override
@@ -44,6 +42,6 @@ public class UserController extends AbstractController<User> {
 
     @Override
     protected User getCurentUser() {
-        return ctx.getCurrentUser();
+        return null;
     }
 }

@@ -12,6 +12,8 @@
     <jaxrs:server id="restContainer" address="/">
         <jaxrs:serviceBeans>
             <ref bean="userController"/>
+            <ref bean="vendorController"/>
+            <ref bean="deviceController"/>
         </jaxrs:serviceBeans>
 
         <jaxrs:providers>

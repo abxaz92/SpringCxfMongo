@@ -2,7 +2,8 @@ package local.david.service.controller;
 
 import local.david.service.common.AbstractController;
 import local.david.service.common.AbstractDAO;
-import local.david.service.model.dao.UserDAO;
+import local.david.service.model.dao.DeviceDAO;
+import local.david.service.model.pojo.Device;
 import local.david.service.model.pojo.User;
 import local.david.service.service.ContextService;
 import org.slf4j.Logger;
@@ -15,26 +16,25 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 /**
- * Created by [david] on 22.11.16.
+ * Created by [david] on 23.11.16.
  */
-@Service("userController")
-@Path("/user")
+@Service("deviceController")
+@Path("/device")
 @Produces(MediaType.APPLICATION_JSON)
-public class UserController extends AbstractController<User> {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-
+public class DeviceController extends AbstractController<Device> {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceController.class);
     @Autowired
-    private UserDAO userDAO;
+    private DeviceDAO deviceDAO;
     @Autowired
     private ContextService ctx;
 
-    public UserController() {
-        super(User.class);
+    public DeviceController() {
+        super(Device.class);
     }
 
     @Override
-    public AbstractDAO<User> getDao() {
-        return userDAO;
+    protected AbstractDAO<Device> getDao() {
+        return deviceDAO;
     }
 
     @Override
