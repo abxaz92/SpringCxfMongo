@@ -1,6 +1,9 @@
 package local.david.service.model.pojo;
 
 import local.david.service.common.Entity;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 import java.util.Set;
@@ -8,6 +11,14 @@ import java.util.Set;
 /**
  * Created by [david] on 23.11.16.
  */
+@Document
+@CompoundIndexes({
+        @CompoundIndex(def = "{timestamp:1}"),
+        @CompoundIndex(def = "{name:1}"),
+        @CompoundIndex(def = "{vendorId:1}"),
+        @CompoundIndex(def = "{restored:1}"),
+        @CompoundIndex(def = "{phone:1}")
+})
 public class Device extends Entity {
     private String name;
     private String desc;
