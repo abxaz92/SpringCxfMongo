@@ -1,5 +1,7 @@
 package local.david.service.common;
 
+import local.david.service.model.Error;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 

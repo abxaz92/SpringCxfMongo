@@ -1,4 +1,4 @@
-package local.david.service.common;
+package local.david.service.model;
 
 /**
  * Created by [david] on 22.11.16.

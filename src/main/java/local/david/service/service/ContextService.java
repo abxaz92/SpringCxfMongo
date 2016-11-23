@@ -19,10 +19,9 @@ public class ContextService {
     private UserDAO userDAO;
 
     public User getCurrentUser() {
-        String principal = (String) SecurityContextHolder.getContext()
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        logger.warn(principal);
-        return userDAO.findById(principal, null);
+        return userDAO.findById(principal.getUsername(), null);
     }
 
     public String getCurrentUserName() {

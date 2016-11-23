@@ -27,12 +27,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private MongoTemplate mongoTemplate;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = mongoTemplate.findOne(
                 new Query(Criteria.where("name").is(username)), User.class);
         org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
-                user.getName(), user.getPass(), true, true, true, true,
+                user.getName(), user.getPassword(), true, true, true, true,
                 getAuthorities(user));
         return userDetails;
     }
