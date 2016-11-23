@@ -1,4 +1,4 @@
-package local.david.service.model;
+package local.david.service.model.pojo;
 
 import local.david.service.common.Entity;
 

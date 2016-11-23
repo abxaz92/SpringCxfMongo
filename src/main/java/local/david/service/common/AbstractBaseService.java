@@ -6,7 +6,7 @@ package local.david.service.common;
 
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
-import local.david.service.model.User;
+import local.david.service.model.pojo.User;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.ObjectMapper;
