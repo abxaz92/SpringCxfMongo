@@ -48,8 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/**").authenticated();
-        http.authorizeRequests().antMatchers("/private/**").authenticated();
+//        http.authorizeRequests().antMatchers("/api/**").authenticated().and().httpBasic();
+        http.authorizeRequests().antMatchers("/private/**").authenticated().and().formLogin()
+                .loginPage("/login.html")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll();
         http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout")).logoutSuccessUrl("/");
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
         http.httpBasic().authenticationEntryPoint(authenticationEntryPoint);
