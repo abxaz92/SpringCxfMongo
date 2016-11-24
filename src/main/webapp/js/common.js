@@ -13,11 +13,15 @@ function route() {
     var url = document.URL;
     if (url.indexOf('#!') > 0) {
         var path;
-        if (url.indexOf('?') > 0)
+        if (url.indexOf('?') > 0) {
             path = url.substring(url.indexOf('#!') + 2, url.indexOf('?'));
-        else path = url.substring(url.indexOf('!') + 1);
+        } else {
+            path = url.substring(url.indexOf('!') + 1);
+        }
         loadToContent(path);
-    } else loadToContent('home')
+    } else {
+        loadToContent('home')
+    }
 }
 function loadToContent(page) {
     try {
