@@ -26,7 +26,7 @@
 
 
     <servlet>
-    <servlet-name>CXFServlet</servlet-name>
+        <servlet-name>CXFServlet</servlet-name>
         <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -38,7 +38,7 @@
 
 
     <session-config>
-        <session-timeout>1</session-timeout>
+        <session-timeout>100</session-timeout>
     </session-config>
 
 </web-app>

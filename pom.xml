@@ -96,7 +96,7 @@
                         </goals>
                         <configuration>
                             <port>8080</port>
-                            <path>/service</path>
+                            <path>/</path>
                             <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
                         </configuration>
                     </execution>

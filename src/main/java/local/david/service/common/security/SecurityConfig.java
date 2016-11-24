@@ -43,13 +43,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring().antMatchers("/portal/api/public");
+        web.ignoring().antMatchers("/api/public/");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http.authorizeRequests().antMatchers("/rest/**").authenticated();
-        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/rest/logout")).logoutSuccessUrl("/");
+        http.authorizeRequests().antMatchers("/api/**").authenticated();
+        http.authorizeRequests().antMatchers("/private/**").authenticated();
+        http.logout().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout")).logoutSuccessUrl("/");
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
         http.httpBasic().authenticationEntryPoint(authenticationEntryPoint);
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
