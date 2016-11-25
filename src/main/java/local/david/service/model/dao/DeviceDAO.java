@@ -26,8 +26,6 @@ public class DeviceDAO extends AbstractDAO<Device> {
 
     @Override
     protected void prepareEntityForSaving(Device entity, User user) {
-        entity.setRestored(false);
         entity.setTimestamp(new Date());
-        entity.setCompleteDate(null);
     }
 }

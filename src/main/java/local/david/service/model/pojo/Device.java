@@ -15,19 +15,16 @@ import java.util.Set;
 @CompoundIndexes({
         @CompoundIndex(def = "{timestamp:1}"),
         @CompoundIndex(def = "{name:1}"),
-        @CompoundIndex(def = "{vendorId:1}"),
-        @CompoundIndex(def = "{restored:1}"),
         @CompoundIndex(def = "{phone:1}")
 })
 public class Device extends Entity {
     private String name;
+    private String imei;
     private String desc;
     private String vendorId;
     private Date timestamp;
-    private boolean restored;
     private double cost;
     private String phone;
-    private Date completeDate;
     private Set<Image> images;
 
     public String getName() {
@@ -62,14 +59,6 @@ public class Device extends Entity {
         this.timestamp = timestamp;
     }
 
-    public boolean isRestored() {
-        return restored;
-    }
-
-    public void setRestored(boolean restored) {
-        this.restored = restored;
-    }
-
     public double getCost() {
         return cost;
     }
@@ -86,19 +75,19 @@ public class Device extends Entity {
         this.phone = phone;
     }
 
-    public Date getCompleteDate() {
-        return completeDate;
-    }
-
-    public void setCompleteDate(Date completeDate) {
-        this.completeDate = completeDate;
-    }
-
     public Set<Image> getImages() {
         return images;
     }
 
     public void setImages(Set<Image> images) {
         this.images = images;
+    }
+
+    public String getImei() {
+        return imei;
+    }
+
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 }

@@ -1,0 +1,135 @@
+<div>
+    <span><input type="button" value="-" id="remove"/></span>
+</div>
+
+<div id="ordwindow" class="form">
+    <div>Заявка на ремонт</div>
+    <div>
+        <div>
+            <input type="hidden" id="id"/>
+        </div>
+        <div><label>Телефон</label> <input type="text" id="phone"/></div>
+        <div><label>Email</label> <input type="text" id="email"/></div>
+        <div style="border: solid;border-radius: 11px;border-width: 0.1px;border-color: #ccc; padding: 5px"><label>Описание
+            неисправности</label>
+            <textarea rows="5" cols="35" name="text" id="description"></textarea></div>
+        <div class="toolbar">
+            <span>
+                <input type="button" value="Закрыть" id='ordcancel'/>
+            </span>
+        </div>
+    </div>
+</div>
+
+
+<div id='jqxWidget' style="font-size: 13px;font-family: Verdana; margin: auto;width: 80%;">
+    <div id="jqxgrid">
+    </div>
+</div>
+<script defer="defer">
+    (function () {
+        var url = host + "/api/device";
+        $('#phone').jqxInput({height: 25, width: 150, minLength: 1});
+        $('#email').jqxInput({height: 25, width: 150, minLength: 1});
+
+        $("#remove").jqxButton({width: '40', height: '30'});
+        $("#remove").on('click', function () {
+            var row = $('#jqxgrid').jqxGrid('getrowdata', $('#jqxgrid').jqxGrid('getselectedrowindex'));
+            Controller.del("/api/device/" + row.id, null, function () {
+                $('#jqxgrid').jqxGrid('updatebounddata');
+            });
+        })
+
+        $("#ordwindow").jqxWindow({width: 370, height: 390, isModal: true, autoOpen: false});
+        $("#ordwindow").on('close', function () {
+            $('#phone').jqxInput("clear");
+            $('#email').jqxInput("clear");
+            $('#description').val("");
+        });
+        $("#ordcancel").jqxButton({width: '90px', height: '30'});
+        $("#ordcancel").on('click', function () {
+            $("#ordwindow").jqxWindow("close");
+        })
+
+        var source = {
+            datatype: "json",
+            datafields: [
+                {name: 'timestamp', type: 'date'},
+                {name: 'phone', type: 'string'},
+                {name: 'name', type: 'string'},
+                {name: 'imei', type: 'string'},
+                {name: 'cost', type: 'float'},
+                {name: 'id', type: 'string'}
+            ],
+            id: 'id',
+            url: url
+        };
+
+        var dataAdapter = new $.jqx.dataAdapter(source, {
+            downloadComplete: function (data, status, xhr) {
+            },
+            loadComplete: function (data) {
+            },
+            loadError: function (xhr, status, error) {
+            }
+        });
+        $("#jqxgrid").jqxGrid({
+            width: 740,
+            height: 500,
+            source: dataAdapter,
+            sortable: true,
+            altrows: true,
+            columns: [
+                {
+                    text: 'Дата',
+                    datafield: 'timestamp',
+                    width: 150,
+                    cellsformat: 'yyyy-MM-dd HH:mm'
+                },
+                {
+                    text: 'Название',
+                    datafield: 'name',
+                    cellsalign: 'left',
+                    align: 'left',
+                    width: 300
+                },
+                {
+                    text: 'Imei',
+                    datafield: 'imei',
+                    cellsalign: 'left',
+                    align: 'left',
+                    width: 100
+                },
+                {
+                    text: 'Номер телефона',
+                    datafield: 'phone',
+                    cellsalign: 'left',
+                    align: 'left',
+                    width: 145
+                },
+                {
+                    text: 'Цена',
+                    datafield: 'cost',
+                    cellsalign: 'left',
+                    align: 'left',
+                    width: 50
+                }
+            ]
+        });
+        $('#jqxgrid').on('rowdoubleclick', function (event) {
+            $("#ordwindow").jqxWindow("open");
+            var row = $('#jqxgrid').jqxGrid('getrowdata', event.args.rowindex);
+            Controller.get("/api/device/" + row.id, function (data) {
+                $("#id").val(data.id)
+                $('#phone').jqxInput('val', !data.phone ? "" : data.phone);
+                $('#email').jqxInput('val', !data.email ? "" : data.email);
+                $('#description').val(!data.description ? "" : data.description);
+            });
+
+
+        });
+    }());
+    function unload() {
+        $("#ordwindow").jqxWindow('destroy');
+    }
+</script>
