@@ -1,0 +1,26 @@
+.form label {
+    width: 40%;
+    display: inline-block;
+    margin: 2% 5% 3% 5%;
+}
+
+.form .toolbar {
+    margin: 5% 0% 0% 20%;
+}
+
+.form .previwe {
+    float: left;
+    position: fixed;
+    margin: auto;
+    height: 40px;
+}
+
+.form .input {
+    margin: auto;
+    width: 160px;
+    display: inline-block;
+}
+
+.form .image {
+    height: 80px;
+}
