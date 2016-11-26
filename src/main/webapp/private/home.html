@@ -16,7 +16,7 @@
         </div>
         <div style="border: solid;border-radius: 11px;border-width: 0.1px;border-color: #ccc; padding: 5px">
             <label>Описание неисправности</label>
-            <textarea rows="5" cols="35" name="text" id="desc"></textarea>
+            <textarea rows="8" cols="80" name="text" id="desc"></textarea>
         </div>
 
         <div class="toolbar">
@@ -41,10 +41,10 @@
         var self = this;
         self.query = {};
         var url = host + "/api/device";
-        $('#name').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Название"});
-        $('#phone').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Номер телефона клиента"});
-        $('#imei').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Imei телефона"});
-        $('#cost').jqxNumberInput({height: 25, width: 150, inputMode: 'simple'});
+        $('#name').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Название"});
+        $('#phone').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Номер телефона клиента"});
+        $('#imei').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Imei телефона"});
+        $('#cost').jqxNumberInput({height: 25, width: 300, inputMode: 'simple'});
 
         $("#addBtn").jqxButton({width: '80', height: '30'});
         $("#addBtn").on('click', function () {
@@ -55,7 +55,7 @@
             $("#ordwindow").jqxWindow("open");
         })
 
-        $("#ordwindow").jqxWindow({width: 370, height: 390, isModal: true, autoOpen: false});
+        $("#ordwindow").jqxWindow({width: 700, height: 600, isModal: true, autoOpen: false});
         $("#ordwindow").on('close', function () {
             $('#phone').jqxInput("clear");
             $('#name').jqxInput("clear");
