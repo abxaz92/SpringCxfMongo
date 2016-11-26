@@ -119,7 +119,7 @@
             },
             async: true,
             filter: function () {
-                self.viewModel.update();
+                update();
             },
             id: 'id',
             url: url
@@ -133,13 +133,14 @@
                         + "&limit=" + Math.floor(this.data.recordendindex);
             }
         });
+
         $("#jqxgrid").jqxGrid({
             width: 740,
             height: 500,
             source: dataAdapter,
-            sortable: true,
             virtualmode: true,
             filterable: true,
+            showfilterrow: true,
             altrows: true,
             columnsresize: true,
             scrollmode: 'deferred',
@@ -203,6 +204,10 @@
             });
 
         });
+        var update = function () {
+            $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+            $("#jqxgrid").jqxGrid('clearselection');
+        }
     }());
     function unload() {
         $("#ordwindow").jqxWindow('destroy');
