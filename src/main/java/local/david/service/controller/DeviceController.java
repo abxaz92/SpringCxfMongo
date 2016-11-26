@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -30,6 +31,12 @@ public class DeviceController extends AbstractController<Device> {
 
     public DeviceController() {
         super(Device.class);
+    }
+
+    @POST
+    @Path("/sec/generate")
+    public void generate() {
+        deviceDAO.generate();
     }
 
     @Override

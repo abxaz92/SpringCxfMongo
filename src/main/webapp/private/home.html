@@ -38,6 +38,8 @@
 </div>
 <script defer="defer">
     (function () {
+        var self = this;
+        self.query = {};
         var url = host + "/api/device";
         $('#name').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Название"});
         $('#phone').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Номер телефона клиента"});
@@ -100,16 +102,35 @@
                 {name: 'cost', type: 'float'},
                 {name: 'id', type: 'string'}
             ],
+            beforeprocessing: function (data) {
+                var source = this;
+                jQuery.ajax({
+                    url: encodeURI(url + "?query=" + JSON.stringify(self.query) + "&count"),
+                    error: function (error) {
+                        logger.error(error.responseText);
+                        source.totalrecords = 0;
+                    },
+                    success: function (data) {
+                        source.totalrecords = data;
+//                        $("#count").text(source.totalrecords);
+                    },
+                    async: false
+                });
+            },
+            async: true,
+            filter: function () {
+                self.viewModel.update();
+            },
             id: 'id',
             url: url
         };
 
         var dataAdapter = new $.jqx.dataAdapter(source, {
-            downloadComplete: function (data, status, xhr) {
-            },
-            loadComplete: function (data) {
-            },
-            loadError: function (xhr, status, error) {
+            beforeSend: function (xhr, settings) {
+                self.query = createQueryByData(this.data);
+                settings.url = encodeURI(url + "?query=" + JSON.stringify(self.query))
+                        + "&skip=" + Math.floor(this.data.recordstartindex)
+                        + "&limit=" + Math.floor(this.data.recordendindex);
             }
         });
         $("#jqxgrid").jqxGrid({
@@ -117,7 +138,14 @@
             height: 500,
             source: dataAdapter,
             sortable: true,
+            virtualmode: true,
+            filterable: true,
             altrows: true,
+            columnsresize: true,
+            scrollmode: 'deferred',
+            rendergridrows: function (params) {
+                return params.data;
+            },
             columns: [
                 {
                     text: 'Дата',
@@ -167,6 +195,12 @@
                 $('#desc').val(!data.desc ? "" : data.desc);
             });
 
+            $("#jqxgrid").on("pagechanged", function (event) {
+
+            });
+            $("#jqxgrid").on("pagesizechanged", function (event) {
+
+            });
 
         });
     }());
