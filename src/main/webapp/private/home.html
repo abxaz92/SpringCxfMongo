@@ -19,11 +19,14 @@
             <textarea rows="8" cols="80" name="text" id="desc"></textarea>
         </div>
 
-        <div class="image">
-            <label>
-                <input id="sortpicture" type="file" name="sortpic"/>
-            </label>
-            <img id="blah" class="previwe" src="#" alt=""/>
+        <div id="formdiv">
+            <div id="filediv">
+                <input type="file" id="file" name="files[]" multiple="multiple" accept="image/*"
+                       title="Select Images To Be Uploaded">
+                <br>
+                <div id="preview"></div>
+            </div>
+            <input type="button" id="add_more" class="upload" value="Add More Images"/>
         </div>
 
         <div class="toolbar">
@@ -44,198 +47,264 @@
     </div>
 </div>
 <script defer="defer">
-    (function () {
-        var self = this;
-        self.query = {};
-        var url = host + "/api/device";
-        $('#name').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Название"});
-        $('#phone').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Номер телефона клиента"});
-        $('#imei').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Imei телефона"});
-        $('#cost').jqxNumberInput({height: 25, width: 300, inputMode: 'simple'});
+    var self = this;
+    self.query = {};
+    var url = host + "/api/device";
+    $('#name').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Название"});
+    $('#phone').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Номер телефона клиента"});
+    $('#imei').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Imei телефона"});
+    $('#cost').jqxNumberInput({height: 25, width: 300, inputMode: 'simple'});
 
-        $("#addBtn").jqxButton({width: '80', height: '30'});
-        $("#addBtn").on('click', function () {
-            /*            var row = $('#jqxgrid').jqxGrid('getrowdata', $('#jqxgrid').jqxGrid('getselectedrowindex'));
-             Controller.del("/api/device/" + row.id, null, function () {
-             $('#jqxgrid').jqxGrid('updatebounddata');
-             });*/
-            $("#ordwindow").jqxWindow("open");
-        })
+    $("#addBtn").jqxButton({width: '80', height: '30'});
+    $("#addBtn").on('click', function () {
+        $("#ordwindow").jqxWindow("open");
+    })
 
-        $("#ordwindow").jqxWindow({width: 700, height: 600, isModal: true, autoOpen: false});
-        $("#ordwindow").on('close', function () {
-            $('#phone').jqxInput("clear");
-            $('#name').jqxInput("clear");
-            $('#imei').jqxInput("clear");
-            $('#cost').jqxNumberInput('clear');
-            $('#id').val("");
-            $('#desc').val("");
-            $('#sortpicture').val("");
-        });
-        $("#ordcancel").jqxButton({width: '90px', height: '30'});
-        $("#ordcancel").on('click', function () {
-            $("#ordwindow").jqxWindow("close");
-        })
-        $("#ordsave").jqxButton({width: '90px', height: '30'});
+    $("#ordwindow").jqxWindow({width: 700, height: 600, isModal: true, autoOpen: false});
+    $("#ordwindow").on('close', function () {
+        $('#phone').jqxInput("clear");
+        $('#name').jqxInput("clear");
+        $('#imei').jqxInput("clear");
+        $('#cost').jqxNumberInput('clear');
+        $('#id').val("");
+        $('#desc').val("");
+        $('#preview').empty()
 
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    $('#blah').attr('src', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $("#sortpicture").change(function () {
-            readURL(this);
+    });
+    $("#ordcancel").jqxButton({width: '90px', height: '30'});
+    $("#ordcancel").on('click', function () {
+        $("#ordwindow").jqxWindow("close");
+    })
+    $("#ordsave").jqxButton({width: '90px', height: '30'});
+    $("#ordsave").on('click', function () {
+        var images = [];
+        $('.abcd').each(function (index) {
+            images.push($('#' + this.id + '>img').attr('src'));
         });
 
-
-        $("#ordsave").on('click', function () {
-            var file_data = $('#sortpicture').prop('files')[0];
-            debugger;
-            var obj = {
-                name: $('#name').val(),
-                phone: $('#phone').val(),
-                imei: $('#imei').val(),
-                cost: $('#cost').val(),
-                desc: $('#desc').val()
-            };
-            var id = $('#id').val();
-            if (id && id.length > 0) {
-                Controller.put("/api/device/" + id, obj, function (res) {
-                    $('#jqxgrid').jqxGrid('updatebounddata');
-                    $("#ordwindow").jqxWindow("close");
-                });
-            } else {
-                Controller.post("/api/device", obj, function () {
-                    $('#jqxgrid').jqxGrid('updatebounddata');
-                    $("#ordwindow").jqxWindow("close");
-                });
-            }
-        })
-
-
-        var source = {
-            datatype: "json",
-            datafields: [
-                {name: 'timestamp', type: 'date'},
-                {name: 'phone', type: 'string'},
-                {name: 'name', type: 'string'},
-                {name: 'imei', type: 'string'},
-                {name: 'cost', type: 'float'},
-                {name: 'id', type: 'string'}
-            ],
-            beforeprocessing: function (data) {
-                var source = this;
-                jQuery.ajax({
-                    url: encodeURI(url + "?query=" + JSON.stringify(self.query) + "&count"),
-                    error: function (error) {
-                        logger.error(error.responseText);
-                        source.totalrecords = 0;
-                    },
-                    success: function (data) {
-                        source.totalrecords = data;
-//                        $("#count").text(source.totalrecords);
-                    },
-                    async: false
-                });
-            },
-            async: true,
-            filter: function () {
-                update();
-            },
-            id: 'id',
-            url: url
+        var obj = {
+            name: $('#name').val(),
+            phone: $('#phone').val(),
+            imei: $('#imei').val(),
+            cost: $('#cost').val(),
+            desc: $('#desc').val(),
+            images: images
         };
+        var id = $('#id').val();
+        if (id && id.length > 0) {
+            Controller.put("/api/device/" + id, obj, function (res) {
+                $('#jqxgrid').jqxGrid('updatebounddata');
+                $("#ordwindow").jqxWindow("close");
+            });
+        } else {
+            Controller.post("/api/device", obj, function () {
+                $('#jqxgrid').jqxGrid('updatebounddata');
+                $("#ordwindow").jqxWindow("close");
+            });
+        }
+    })
 
-        var dataAdapter = new $.jqx.dataAdapter(source, {
-            beforeSend: function (xhr, settings) {
-                self.query = createQueryByData(this.data);
-                settings.url = encodeURI(url + "?query=" + JSON.stringify(self.query))
-                        + "&skip=" + Math.floor(this.data.recordstartindex)
-                        + "&limit=" + Math.floor(this.data.recordendindex);
+
+    var source = {
+        datatype: "json",
+        datafields: [
+            {name: 'timestamp', type: 'date'},
+            {name: 'phone', type: 'string'},
+            {name: 'name', type: 'string'},
+            {name: 'imei', type: 'string'},
+            {name: 'cost', type: 'float'},
+            {name: 'id', type: 'string'}
+        ],
+        beforeprocessing: function (data) {
+            var source = this;
+            jQuery.ajax({
+                url: encodeURI(url + "?query=" + JSON.stringify(self.query) + "&count"),
+                error: function (error) {
+                    logger.error(error.responseText);
+                    source.totalrecords = 0;
+                },
+                success: function (data) {
+                    source.totalrecords = data;
+//                        $("#count").text(source.totalrecords);
+                },
+                async: false
+            });
+        },
+        async: true,
+        filter: function () {
+            update();
+        },
+        id: 'id',
+        url: url
+    };
+
+    var dataAdapter = new $.jqx.dataAdapter(source, {
+        beforeSend: function (xhr, settings) {
+            self.query = createQueryByData(this.data);
+            settings.url = encodeURI(url + "?query=" + JSON.stringify(self.query))
+                    + "&skip=" + Math.floor(this.data.recordstartindex)
+                    + "&limit=" + Math.floor(this.data.recordendindex);
+        }
+    });
+
+    $("#jqxgrid").jqxGrid({
+        width: 910,
+        height: 500,
+        source: dataAdapter,
+        virtualmode: true,
+        filterable: true,
+        showfilterrow: true,
+        altrows: true,
+        columnsresize: true,
+        scrollmode: 'deferred',
+        rendergridrows: function (params) {
+            return params.data;
+        },
+        columns: [
+            {
+                text: 'Дата',
+                datafield: 'timestamp',
+                width: 150,
+                cellsformat: 'yyyy-MM-dd HH:mm'
+            },
+            {
+                text: 'Название',
+                datafield: 'name',
+                cellsalign: 'left',
+                align: 'left',
+                width: 400
+            },
+            {
+                text: 'Imei',
+                datafield: 'imei',
+                cellsalign: 'left',
+                align: 'left',
+                width: 120
+            },
+            {
+                text: 'Номер телефона',
+                datafield: 'phone',
+                cellsalign: 'left',
+                align: 'left',
+                width: 130
+            },
+            {
+                text: 'Цена',
+                datafield: 'cost',
+                cellsalign: 'left',
+                align: 'left',
+                width: 90
+            }
+        ]
+    });
+    $('#jqxgrid').on('rowdoubleclick', function (event) {
+        $("#ordwindow").jqxWindow("open");
+        var row = $('#jqxgrid').jqxGrid('getrowdata', event.args.rowindex);
+        Controller.get("/api/device/" + row.id, function (data) {
+            $("#id").val(data.id)
+            $('#phone').jqxInput('val', !data.phone ? "" : data.phone);
+            $('#name').jqxInput('val', !data.name ? "" : data.name);
+            $('#cost').jqxNumberInput('val', !data.cost ? "" : data.cost);
+            $('#imei').jqxInput('val', !data.imei ? "" : data.imei);
+            $('#desc').val(!data.desc ? "" : data.desc);
+            var images = data.images;
+            for (i = 0; i < images.length; i++) {
+                newElement = $("<div id='previewImg" + i + "' class='abcd'><img /></div>");
+                deleteBtn = $("<span class='delete' onClick='deletePreview(this, " + i + ")'>delete</span>").prependTo(newElement);
+                preview = newElement.find("img");
+                preview.attr("src", images[i]);
+                preview.attr("alt", 'previewImg' + i);
+                newElement.appendTo("#preview");
             }
         });
 
-        $("#jqxgrid").jqxGrid({
-            width: 910,
-            height: 500,
-            source: dataAdapter,
-            virtualmode: true,
-            filterable: true,
-            showfilterrow: true,
-            altrows: true,
-            columnsresize: true,
-            scrollmode: 'deferred',
-            rendergridrows: function (params) {
-                return params.data;
-            },
-            columns: [
-                {
-                    text: 'Дата',
-                    datafield: 'timestamp',
-                    width: 150,
-                    cellsformat: 'yyyy-MM-dd HH:mm'
-                },
-                {
-                    text: 'Название',
-                    datafield: 'name',
-                    cellsalign: 'left',
-                    align: 'left',
-                    width: 400
-                },
-                {
-                    text: 'Imei',
-                    datafield: 'imei',
-                    cellsalign: 'left',
-                    align: 'left',
-                    width: 120
-                },
-                {
-                    text: 'Номер телефона',
-                    datafield: 'phone',
-                    cellsalign: 'left',
-                    align: 'left',
-                    width: 130
-                },
-                {
-                    text: 'Цена',
-                    datafield: 'cost',
-                    cellsalign: 'left',
-                    align: 'left',
-                    width: 90
-                }
-            ]
-        });
-        $('#jqxgrid').on('rowdoubleclick', function (event) {
-            $("#ordwindow").jqxWindow("open");
-            var row = $('#jqxgrid').jqxGrid('getrowdata', event.args.rowindex);
-            Controller.get("/api/device/" + row.id, function (data) {
-                $("#id").val(data.id)
-                $('#phone').jqxInput('val', !data.phone ? "" : data.phone);
-                $('#name').jqxInput('val', !data.name ? "" : data.name);
-                $('#cost').jqxNumberInput('val', !data.cost ? "" : data.cost);
-                $('#imei').jqxInput('val', !data.imei ? "" : data.imei);
-                $('#desc').val(!data.desc ? "" : data.desc);
-            });
-
-            $("#jqxgrid").on("pagechanged", function (event) {
-
-            });
-            $("#jqxgrid").on("pagesizechanged", function (event) {
-
-            });
+        $("#jqxgrid").on("pagechanged", function (event) {
 
         });
-        var update = function () {
-            $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
-            $("#jqxgrid").jqxGrid('clearselection');
-        }
-    }());
+        $("#jqxgrid").on("pagesizechanged", function (event) {
+
+        });
+
+    });
+    var update = function () {
+        $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+        $("#jqxgrid").jqxGrid('clearselection');
+    }
+
     function unload() {
         $("#ordwindow").jqxWindow('destroy');
     }
+
+    $('#add_more').click(function () {
+        "use strict";
+        $(this).before($("<div/>", {
+            id: 'filediv'
+        }).fadeIn('slow').append(
+                $("<input/>", {
+                    name: 'file[]',
+                    type: 'file',
+                    id: 'file',
+                    multiple: 'multiple',
+                    accept: 'image/*'
+                })
+        ));
+    });
+
+    $('#upload').click(function (e) {
+        "use strict";
+        e.preventDefault();
+
+        if (window.filesToUpload.length === 0 || typeof window.filesToUpload === "undefined") {
+            alert("No files are selected.");
+            return false;
+        }
+
+        // Now, upload the files below...
+        // https://developer.mozilla.org/en-US/docs/Using_files_from_web_applications#Handling_the_upload_process_for_a_file.2C_asynchronously
+    });
+
+    function deletePreview(ele, i) {
+        "use strict";
+        try {
+            $(ele).parent().remove();
+            window.filesToUpload.splice(i, 1);
+        } catch (e) {
+            console.log(e.message);
+        }
+    }
+
+    $("#file").on('change', function () {
+        "use strict";
+        // create an empty array for the files to reside.
+        window.filesToUpload = [];
+        if (this.files.length >= 1) {
+            $("[id^=previewImg]").remove();
+            $.each(this.files, function (i, img) {
+                var reader = new FileReader(),
+                        newElement = $("<div id='previewImg" + i + "' class='abcd'><img /></div>"),
+                        deleteBtn = $("<span class='delete' onClick='deletePreview(this, " + i + ")'>delete</span>").prependTo(newElement),
+                        preview = newElement.find("img");
+                reader.onloadend = function () {
+                    preview.attr("src", reader.result);
+                    preview.attr("alt", img.name);
+                };
+
+                try {
+                    window.filesToUpload.push(document.getElementById("file").files[i]);
+                } catch (e) {
+                    console.log(e.message);
+                }
+
+                if (img) {
+                    reader.readAsDataURL(img);
+                } else {
+                    preview.src = "";
+                }
+
+                newElement.appendTo("#preview");
+            });
+        }
+    });
+
+
 </script>

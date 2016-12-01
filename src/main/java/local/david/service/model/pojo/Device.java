@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -26,7 +27,7 @@ public class Device extends Entity {
     private Date timestamp;
     private double cost;
     private String phone;
-    private Set<Image> images;
+    private Set<String> images = new HashSet<>();
 
     public String getName() {
         return name;
@@ -68,11 +69,11 @@ public class Device extends Entity {
         this.phone = phone;
     }
 
-    public Set<Image> getImages() {
+    public Set<String> getImages() {
         return images;
     }
 
-    public void setImages(Set<Image> images) {
+    public void setImages(Set<String> images) {
         this.images = images;
     }
 
