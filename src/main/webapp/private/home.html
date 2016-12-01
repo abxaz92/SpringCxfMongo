@@ -19,6 +19,13 @@
             <textarea rows="8" cols="80" name="text" id="desc"></textarea>
         </div>
 
+        <div class="image">
+            <label>
+                <input id="sortpicture" type="file" name="sortpic"/>
+            </label>
+            <img id="blah" class="previwe" src="#" alt=""/>
+        </div>
+
         <div class="toolbar">
             <span>
                 <input type="button" value="Отмена" id='ordcancel'/>
@@ -63,14 +70,32 @@
             $('#cost').jqxNumberInput('clear');
             $('#id').val("");
             $('#desc').val("");
+            $('#sortpicture').val("");
         });
         $("#ordcancel").jqxButton({width: '90px', height: '30'});
         $("#ordcancel").on('click', function () {
             $("#ordwindow").jqxWindow("close");
         })
         $("#ordsave").jqxButton({width: '90px', height: '30'});
-        $("#ordsave").on('click', function () {
 
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#blah').attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        $("#sortpicture").change(function () {
+            readURL(this);
+        });
+
+
+        $("#ordsave").on('click', function () {
+            var file_data = $('#sortpicture').prop('files')[0];
+            debugger;
             var obj = {
                 name: $('#name').val(),
                 phone: $('#phone').val(),
@@ -91,6 +116,7 @@
                 });
             }
         })
+
 
         var source = {
             datatype: "json",

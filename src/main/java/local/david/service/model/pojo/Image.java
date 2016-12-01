@@ -1,46 +1,25 @@
 package local.david.service.model.pojo;
 
-import java.util.Date;
-
 /**
  * Created by [david] on 23.11.16.
  */
 public class Image {
-    private String location;
-    private Date timestamp;
+    private String data;
+    private String type;
 
-    public String getLocation() {
-        return location;
+    public String getData() {
+        return data;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setData(String data) {
+        this.data = data;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public String getType() {
+        return type;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Image image = (Image) o;
-
-        if (location != null ? !location.equals(image.location) : image.location != null) return false;
-        return timestamp != null ? timestamp.equals(image.timestamp) : image.timestamp == null;
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = location != null ? location.hashCode() : 0;
-        result = 31 * result + (timestamp != null ? timestamp.hashCode() : 0);
-        return result;
+    public void setType(String type) {
+        this.type = type;
     }
 }
