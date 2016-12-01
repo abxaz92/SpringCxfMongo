@@ -168,3 +168,67 @@ function drawChart(labels, data, label, ctx) {
         }
     });
 }
+
+var createQueryByData = function(data) {
+    var query = {
+        "$and" : [ {} ]
+    };
+    //debugger
+    for ( var i = 0; i < data.filterscount; ++i) {
+        var queryOperator = {};
+        var criteria = {};
+        var condition = data["filtercondition" + i];
+        if (condition == "CONTAINS") {
+            criteria[data["filterdatafield" + i]] = {
+                "$regex" : "(?i).*" + data["filtervalue" + i] + ".*"
+            };
+        } else if (condition == "STARTS_WITH") {
+            criteria[data["filterdatafield" + i]] = {
+                "$regex" : "(?i)^" + data["filtervalue" + i] + ".*"
+            };
+        } else if (condition == "STARTS_WITH_CASE_SENSITIVE") {
+            criteria[data["filterdatafield" + i]] = {
+                "$regex" : "^" + data["filtervalue" + i] + ".*"
+            };
+        } else if (condition == "ENDS_WITH") {
+            criteria[data["filterdatafield" + i]] = {
+                "$regex" : "(?i).*" + data["filtervalue" + i] + "$"
+            };
+        } else if (condition == "ENDS_WITH_CASE_SENSITIVE") {
+            criteria[data["filterdatafield" + i]] = {
+                "$regex" : ".*" + data["filtervalue" + i] + "$"
+            };
+        } else if (condition == "EQUAL") {
+            criteria[data["filterdatafield" + i]] = {
+                "$regex" : "(?i)^" + data["filtervalue" + i] + "$"
+            };
+        } else if (condition == "EQUAL_CASE_SENSITIVE") {
+            criteria[data["filterdatafield" + i]] = data["filtervalue" + i];
+        }
+        else if (condition == 'GREATER_THAN_OR_EQUAL') {
+            // var gteDate = new Date(data["filtervalue" + i]).getTime();
+            // debugger
+            // console.log(gteDate);
+            // criteria[data["filterdatafield" + i]] = {
+            // 	"$gte" : {
+            // 		'$date' : gteDate
+            // 	}
+            // };
+        } else if ( condition == 'LESS_THAN_OR_EQUAL') {
+            // var lteDate = new Date(data["filtervalue" + i]).getTime();
+
+            // criteria[data["filterdatafield" + i]] = {
+            // 	"$lte" : {
+            // 		'$date' : lteDate
+            // 	}
+            // };
+        }
+        var operator = data["filteroperator" + i] == 0 ? "$and" : "$or";
+        if (typeof queryOperator[operator] == "undefined") {
+            queryOperator[operator] = [];
+        }
+        queryOperator[operator].push(criteria);
+        query["$and"].push(queryOperator);
+    }
+    return query;
+};

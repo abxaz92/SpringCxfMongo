@@ -15,13 +15,14 @@ import java.util.Set;
 @CompoundIndexes({
         @CompoundIndex(def = "{timestamp:1}"),
         @CompoundIndex(def = "{name:1}"),
+        @CompoundIndex(def = "{catId:1}"),
         @CompoundIndex(def = "{phone:1}")
 })
 public class Device extends Entity {
     private String name;
     private String imei;
     private String desc;
-    private String vendorId;
+    private String catId;
     private Date timestamp;
     private double cost;
     private String phone;
@@ -41,14 +42,6 @@ public class Device extends Entity {
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public String getVendorId() {
-        return vendorId;
-    }
-
-    public void setVendorId(String vendorId) {
-        this.vendorId = vendorId;
     }
 
     public Date getTimestamp() {
@@ -89,5 +82,13 @@ public class Device extends Entity {
 
     public void setImei(String imei) {
         this.imei = imei;
+    }
+
+    public String getCatId() {
+        return catId;
+    }
+
+    public void setCatId(String catId) {
+        this.catId = catId;
     }
 }

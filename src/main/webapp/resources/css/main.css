@@ -5,7 +5,9 @@
 }
 
 .form .toolbar {
-    margin: 5% 0% 0% 20%;
+    width: 204px;
+    margin: auto;
+    padding-top: 3%;
 }
 
 .form .previwe {

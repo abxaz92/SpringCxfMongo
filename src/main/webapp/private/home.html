@@ -16,7 +16,7 @@
         </div>
         <div style="border: solid;border-radius: 11px;border-width: 0.1px;border-color: #ccc; padding: 5px">
             <label>Описание неисправности</label>
-            <textarea rows="5" cols="35" name="text" id="desc"></textarea>
+            <textarea rows="8" cols="80" name="text" id="desc"></textarea>
         </div>
 
         <div class="toolbar">
@@ -38,13 +38,15 @@
 </div>
 <script defer="defer">
     (function () {
+        var self = this;
+        self.query = {};
         var url = host + "/api/device";
-        $('#name').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Название"});
-        $('#phone').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Номер телефона клиента"});
-        $('#imei').jqxInput({height: 25, width: 150, minLength: 1, placeHolder: "Imei телефона"});
-        $('#cost').jqxNumberInput({height: 25, width: 150, inputMode: 'simple'});
+        $('#name').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Название"});
+        $('#phone').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Номер телефона клиента"});
+        $('#imei').jqxInput({height: 25, width: 300, minLength: 1, placeHolder: "Imei телефона"});
+        $('#cost').jqxNumberInput({height: 25, width: 300, inputMode: 'simple'});
 
-        $("#addBtn").jqxButton({width: '40', height: '30'});
+        $("#addBtn").jqxButton({width: '80', height: '30'});
         $("#addBtn").on('click', function () {
             /*            var row = $('#jqxgrid').jqxGrid('getrowdata', $('#jqxgrid').jqxGrid('getselectedrowindex'));
              Controller.del("/api/device/" + row.id, null, function () {
@@ -53,7 +55,7 @@
             $("#ordwindow").jqxWindow("open");
         })
 
-        $("#ordwindow").jqxWindow({width: 370, height: 390, isModal: true, autoOpen: false});
+        $("#ordwindow").jqxWindow({width: 700, height: 600, isModal: true, autoOpen: false});
         $("#ordwindow").on('close', function () {
             $('#phone').jqxInput("clear");
             $('#name').jqxInput("clear");
@@ -100,24 +102,51 @@
                 {name: 'cost', type: 'float'},
                 {name: 'id', type: 'string'}
             ],
+            beforeprocessing: function (data) {
+                var source = this;
+                jQuery.ajax({
+                    url: encodeURI(url + "?query=" + JSON.stringify(self.query) + "&count"),
+                    error: function (error) {
+                        logger.error(error.responseText);
+                        source.totalrecords = 0;
+                    },
+                    success: function (data) {
+                        source.totalrecords = data;
+//                        $("#count").text(source.totalrecords);
+                    },
+                    async: false
+                });
+            },
+            async: true,
+            filter: function () {
+                update();
+            },
             id: 'id',
             url: url
         };
 
         var dataAdapter = new $.jqx.dataAdapter(source, {
-            downloadComplete: function (data, status, xhr) {
-            },
-            loadComplete: function (data) {
-            },
-            loadError: function (xhr, status, error) {
+            beforeSend: function (xhr, settings) {
+                self.query = createQueryByData(this.data);
+                settings.url = encodeURI(url + "?query=" + JSON.stringify(self.query))
+                        + "&skip=" + Math.floor(this.data.recordstartindex)
+                        + "&limit=" + Math.floor(this.data.recordendindex);
             }
         });
+
         $("#jqxgrid").jqxGrid({
-            width: 740,
+            width: 910,
             height: 500,
             source: dataAdapter,
-            sortable: true,
+            virtualmode: true,
+            filterable: true,
+            showfilterrow: true,
             altrows: true,
+            columnsresize: true,
+            scrollmode: 'deferred',
+            rendergridrows: function (params) {
+                return params.data;
+            },
             columns: [
                 {
                     text: 'Дата',
@@ -130,14 +159,14 @@
                     datafield: 'name',
                     cellsalign: 'left',
                     align: 'left',
-                    width: 270
+                    width: 400
                 },
                 {
                     text: 'Imei',
                     datafield: 'imei',
                     cellsalign: 'left',
                     align: 'left',
-                    width: 100
+                    width: 120
                 },
                 {
                     text: 'Номер телефона',
@@ -167,8 +196,18 @@
                 $('#desc').val(!data.desc ? "" : data.desc);
             });
 
+            $("#jqxgrid").on("pagechanged", function (event) {
+
+            });
+            $("#jqxgrid").on("pagesizechanged", function (event) {
+
+            });
 
         });
+        var update = function () {
+            $("#jqxgrid").jqxGrid('updatebounddata', 'filter');
+            $("#jqxgrid").jqxGrid('clearselection');
+        }
     }());
     function unload() {
         $("#ordwindow").jqxWindow('destroy');
