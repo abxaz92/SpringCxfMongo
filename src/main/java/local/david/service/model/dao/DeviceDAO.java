@@ -3,6 +3,9 @@ package local.david.service.model.dao;
 import local.david.service.common.AbstractDAO;
 import local.david.service.model.pojo.Device;
 import local.david.service.model.pojo.User;
+import org.codehaus.jackson.JsonNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +18,24 @@ import java.util.List;
  */
 @Service
 public class DeviceDAO extends AbstractDAO<Device> {
+    private static final Logger logger = LoggerFactory.getLogger(DeviceDAO.class);
+
     public DeviceDAO() {
         super(Device.class);
+    }
+
+    @Override
+    public Object getByQueryNew(String jsonQuery, String count, Integer skip, Integer limit, String sortProperties, String sortDirection, User user) {
+        if (sortDirection == null) {
+            sortProperties = "timestamp";
+            sortDirection = "desc";
+        }
+        return super.getByQueryNew(jsonQuery, count, skip, limit, sortProperties, sortDirection, user);
+    }
+
+    @Override
+    public void prePut(Device entity, String id) {
+        entity.setTimestamp(new Date());
     }
 
     public Device makeRestored(String id) {

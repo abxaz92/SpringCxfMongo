@@ -14,6 +14,11 @@ public class UserDAO extends AbstractDAO<User> {
     }
 
     @Override
+    public void prePut(User entity, String id) {
+
+    }
+
+    @Override
     protected void prepareEntityForSaving(User entity, User user) {
 
     }

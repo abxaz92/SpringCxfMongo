@@ -15,6 +15,11 @@ public class VendorDAO extends AbstractDAO<Vendor> {
     }
 
     @Override
+    public void prePut(Vendor entity, String id) {
+
+    }
+
+    @Override
     protected void prepareEntityForSaving(Vendor entity, User user) {
 
     }

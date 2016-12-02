@@ -141,7 +141,7 @@
             update();
         },
         id: 'id',
-        url: url + "?sort=timestamp&direction=asc"
+        url: url
     };
 
     var dataAdapter = new $.jqx.dataAdapter(source, {
@@ -240,21 +240,6 @@
     function unload() {
         $("#ordwindow").jqxWindow('destroy');
     }
-
-//    $('#add_more').click(function () {
-//        "use strict";
-//        $(this).before($("<div/>", {
-//            id: 'filediv'
-//        }).fadeIn('slow').append(
-//                $("<input/>", {
-//                    name: 'file[]',
-//                    type: 'file',
-//                    id: 'file',
-//                    multiple: 'multiple',
-//                    accept: 'image/*'
-//                })
-//        ));
-//    });
 
     $('#upload').click(function (e) {
         "use strict";

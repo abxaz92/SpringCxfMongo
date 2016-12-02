@@ -71,9 +71,12 @@ public abstract class AbstractDAO<E extends Entity> extends
 
     public E put(JsonNode json, String id, User user) {
         E entity = findAndMerge(json, id, user);
+        prePut(entity, id);
         save(entity);
         return entity;
     }
+
+    public abstract void prePut(E entity, String id);
 
     public E findAndMerge(JsonNode json, String id, User user) {
         E old = findById(id, user);
